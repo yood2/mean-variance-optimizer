@@ -1,12 +1,12 @@
 import requests
+import pandas as pd
 
 from api import get_key
 
-url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey={get_key}'
-r = requests.get(url)
-data = r.json()
+# API KEY GOES HERE #####
+key = get_key()
+#########################
 
-print(data)
 
 '''
 DATA NEEDED:
@@ -19,9 +19,26 @@ DATA NEEDED:
 '''
 
 # FIRST FETCH HISTORICAL DATA
-def fetch_historical_prices(stock):
-    res = ''
-    return res
+def fetch_historical_prices(key, symbol):
+    output = 'compact'
+    url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&output={output}&apikey={key}'
+    r = requests.get(url)
+    data = r.json()
+    return data
+
+print(fetch_historical_prices(key, 'IBM'))
+
+def calculate_daily_returns(raw):
+    returns = raw.pct_change().dropna()
+    return returns
+
+print(calculate_daily_returns(fetch_historical_prices(key, 'IBM')))
+
+
+
+
+
+
 
 # CALCULATE EXPECTED RETURNS AND COVARIANCE MATRIX
 # Maybe use numpy or pandas for this
