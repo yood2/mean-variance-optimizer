@@ -14,27 +14,15 @@ DATA NEEDED:
 - Stock beta (beta measures volatilty relative to market)
 '''
 
+############### GLOBAL VARIABLES ######################
+portfolio = {'NVDA': 0.5, 'SBUX': 0.5}
+window_start = '2018-01-01'
+window_end = '2023-01-01'
+data_type = 'Adj Close'
+risk_free_Rate = 0.02
+#######################################################
 
-'''
-1. Fetch data
-2. Preprocess pricing info into percent change between data points
-'''
-def fetch(symbols, window_start, window_end, data_type):
-    data = (yf.download(symbols, start=window_start, end=window_end)[data_type]).pct_change().dropna()
-    return data
-
-'''
-EXPECTED RETURN OPTIONS:
-1. Historical Average Return, better for long histories
-2. CAPM (We need to get beta), uses risk in calculations
-3. DDM or GGM, predictable portfolio with dividend paying stocks
-'''
-def historical_average_return(data):
-    return data.mean()
-
-
-
-
-
-def covariance_matrix(data):
-    return data.cov()
+data = yf.download(list(portfolio.keys()), start=window_start, end=window_end)[data_type]
+returns = data.pct_change().dropna()
+expected_return = returns.mean()
+expected_return['Weight'] = expected_return['Ticker'].map(portfolio)
