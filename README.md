@@ -13,3 +13,9 @@ Create a ReactJS front-end that will consume the API and have a interactive dash
 
 #### References
 https://www.alphavantage.co/documentation/
+https://pypi.org/project/yfinance/
+
+#### Log
+Aug 4, 2024: Scaffolded basic project structure (fetch, process, output). Fetching stock data using Alpha Vantage.
+
+Aug 5, 2024: Decided to use yFinance over Alpha Vantage since it offers adjusted close data for free. 
