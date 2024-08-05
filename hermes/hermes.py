@@ -25,4 +25,8 @@ risk_free_Rate = 0.02
 data = yf.download(list(portfolio.keys()), start=window_start, end=window_end)[data_type]
 returns = data.pct_change().dropna()
 expected_return = returns.mean()
-expected_return['Weight'] = expected_return['Ticker'].map(portfolio)
+expected_return_df = expected_return.reset_index()
+expected_return_df.columns = ['Ticker', 'Expected Return']
+expected_return_df['Weight'] = expected_return_df['Ticker'].map(portfolio)
+expected_return_df['Weighted Return'] = expected_return_df['Expected Return'] * expected_return_df['Weight']
+portfolio_expected_return = expected_return_df['Weighted Return'].sum()

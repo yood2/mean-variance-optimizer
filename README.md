@@ -12,10 +12,15 @@ Will first make a Command Line Interface program to test all of the methods need
 Create a ReactJS front-end that will consume the API and have a interactive dashboard.
 
 #### References
-https://www.alphavantage.co/documentation/
 https://pypi.org/project/yfinance/
+https://flask-restful.readthedocs.io/en/latest/index.html
 
 #### Log
-Aug 4, 2024: Scaffolded basic project structure (fetch, process, output). Fetching stock data using Alpha Vantage.
+Aug 4, 2024: 
+- Scaffolded basic project structure (fetch, process, output).
+- Fetching stock data using Alpha Vantage.
 
-Aug 5, 2024: Decided to use yFinance over Alpha Vantage since it offers adjusted close data for free. 
+Aug 5, 2024: 
+- Decided to use yFinance over Alpha Vantage since it offers adjusted close data for free. 
+- Migrated code to a Jupyter Notebook to develop models easier using Pandas (easier to visualize than CLI!).
+- Started bootstrapped the RESTful API using flask-restful library
