@@ -22,6 +22,9 @@ data_type = 'Adj Close'
 risk_free_Rate = 0.02
 #######################################################
 
+def testConnection():
+    print('Working!')
+
 data = yf.download(list(portfolio.keys()), start=window_start, end=window_end)[data_type]
 returns = data.pct_change().dropna()
 expected_return = returns.mean()
