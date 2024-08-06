@@ -1,35 +1,66 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from scipy.optimize import minimize
 import yfinance as yf
+from scipy.optimize import minimize
+
+class ModernPortfolio:
+    def __init__(self, tickers, start_date, end_date, data_type='Adj Close'):
+        self.tickers = tickers
+        self.start_date = start_date
+        self.end_date = end_date
+        self.data_type = data_type
+        self.risk_free_rate = self.calculate_risk_free()
+        self.data = yf.download(self.tickers, start=self.start_date, end=self.end_date)[self.data_type]
+        self.returns = self.data.pct_change().dropna()
+        self.expected_returns = self.returns.mean()
+        self.covariance = self.returns.cov()
+        self.bounds = [(0, 1) for _ in range(len(self.expected_returns))]
+        self.initial_guess = [1.0 / len(self.expected_returns) for _ in range(len(self.expected_returns))]
+        self.constraints = ({'type': 'eq', 'fun': self.weight_constraint})
+
+    def calculate_risk_free(self):
+        data = yf.Ticker('^IRX')  # 3-month T-Bill
+        history = data.history(period='1d')
+        latest = history['Close'].iloc[-1]
+        return latest / 100
+
+    def metrics(self, weights):
+        portfolio_return = np.dot(weights, self.expected_returns)
+        portfolio_var = np.dot(weights.T, np.dot(self.covariance, weights))
+        portfolio_std = np.sqrt(portfolio_var)
+        sharpe = (portfolio_return - self.risk_free_rate) / portfolio_std
+        return portfolio_return, portfolio_std, sharpe
+
+    def negative_sharpe_ratio(self, weights):
+        return -self.metrics(weights)[2]
+
+    def weight_constraint(self, weights):
+        return np.sum(weights) - 1
+
+    def format_weights_as_dict(self, weights):
+        return {asset: round(weight, 4) for asset, weight in zip(self.tickers, weights)}
+
+    def optimize_portfolio(self):
+        result = minimize(
+            self.negative_sharpe_ratio,
+            self.initial_guess,
+            method='SLSQP',
+            bounds=self.bounds,
+            constraints=self.constraints
+        )
+        optimal_weights = result.x
+        return self.format_weights_as_dict(optimal_weights)
 
 '''
-DATA NEEDED:
-- Historical stock prices from API
-- Expected Returns (calculated from average historical prices)
-- Risk-free rate (government treasury bills?)
-- Market returns (historical market index, S&P 500?)
-- Covariance Matrix (covariance between all pairs of stock, calculated from historical returns of stock)
-- Stock beta (beta measures volatilty relative to market)
-'''
-
-############### GLOBAL VARIABLES ######################
-portfolio = {'NVDA': 0.5, 'SBUX': 0.5}
+# Example usage
+portfolio = ['NVDA', 'SBUX']
 window_start = '2018-01-01'
-window_end = '2023-01-01'
-data_type = 'Adj Close'
-risk_free_Rate = 0.02
-#######################################################
+window_end = '2024-01-01'
 
-def testConnection():
-    print('Working!')
+# Create an instance of ModernPortfolio
+modern_portfolio = ModernPortfolio(portfolio, window_start, window_end)
 
-data = yf.download(list(portfolio.keys()), start=window_start, end=window_end)[data_type]
-returns = data.pct_change().dropna()
-expected_return = returns.mean()
-expected_return_df = expected_return.reset_index()
-expected_return_df.columns = ['Ticker', 'Expected Return']
-expected_return_df['Weight'] = expected_return_df['Ticker'].map(portfolio)
-expected_return_df['Weighted Return'] = expected_return_df['Expected Return'] * expected_return_df['Weight']
-portfolio_expected_return = expected_return_df['Weighted Return'].sum()
+# Optimize and get the optimal weights as a dictionary
+optimal_weights_dict = modern_portfolio.optimize_portfolio()
+print(optimal_weights_dict)
+'''
