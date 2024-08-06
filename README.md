@@ -1,4 +1,5 @@
-![Hermes](./public/hermes.svg)
+<img src="./public/hermes.svg" alt="drawing" width="100"/>
+
 # Hermes API
 ### Modern Portfolio Theory API
 Given a portfolio of tickers, return optimal weight.
