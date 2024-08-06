@@ -38,8 +38,12 @@ class ModernPortfolio:
         return np.sum(weights) - 1
 
     def format_weights_as_dict(self, weights):
-        return {asset: round(weight, 4) for asset, weight in zip(self.tickers, weights)}
-
+        formatted_weights = {}
+        for asset, weight in zip(self.tickers, weights):
+            rounded_weight = float(round(weight, 4))
+            formatted_weights[asset] = rounded_weight
+        return formatted_weights
+    
     def optimize_portfolio(self):
         result = minimize(
             self.negative_sharpe_ratio,
@@ -51,16 +55,15 @@ class ModernPortfolio:
         optimal_weights = result.x
         return self.format_weights_as_dict(optimal_weights)
 
-'''
-# Example usage
-portfolio = ['NVDA', 'SBUX']
-window_start = '2018-01-01'
-window_end = '2024-01-01'
 
-# Create an instance of ModernPortfolio
-modern_portfolio = ModernPortfolio(portfolio, window_start, window_end)
+# # Example usage
+# portfolio = ['NVDA', 'SBUX']
+# window_start = '2018-01-01'
+# window_end = '2024-01-01'
 
-# Optimize and get the optimal weights as a dictionary
-optimal_weights_dict = modern_portfolio.optimize_portfolio()
-print(optimal_weights_dict)
-'''
+# # Create an instance of ModernPortfolio
+# modern_portfolio = ModernPortfolio(portfolio, window_start, window_end)
+
+# # Optimize and get the optimal weights as a dictionary
+# optimal_weights_dict = modern_portfolio.optimize_portfolio()
+# print(optimal_weights_dict)

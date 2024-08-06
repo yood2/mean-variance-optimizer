@@ -2,8 +2,14 @@ import requests
 
 url = 'http://127.0.0.1:5000/portfolio'
 
-requests.put(url, json={'NVDA': 0.5, 'SBUX': 0.5})
+tickers = ['NVDA', 'SBUX']
 
-res = requests.get(url)
+params = {
+    'tickers': ','.join(tickers),
+    'start_date': '2018-01-01',
+    'end_date': '2024-01-01'
+}
+
+res = requests.get(url, params=params)
 
 print(res.json())
