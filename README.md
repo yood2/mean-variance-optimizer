@@ -2,7 +2,7 @@
 
 # Hermes API
 ### Modern Portfolio Theory API
-Given a portfolio of tickers, return optimal weight. Try it on my website here: https://yood2.github.io/Hermes
+Given a portfolio of tickers, return optimal weight. Try it on my website here: https://yood2.github.io/#/Hermes
 
 ### Installing Dependencies
 1. Start a virtual python environment
