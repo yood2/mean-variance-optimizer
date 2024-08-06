@@ -19,7 +19,7 @@ TESTING OPTIMIZE
 '''
 TESTING CALCULATE
 '''
-portfolio = {'NVDA': 0.6, 'SBUX': 0.4}
+portfolio = {'NVDA': 0.5, 'SBUX': 0.5}
 params = {
     'portfolio': portfolio,
     'start_date': '2018-01-01',
