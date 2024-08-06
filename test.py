@@ -11,6 +11,7 @@ params = {
     'end_date': '2024-01-01'
 }
 
+# print(params)
 res = requests.get(render_url, params=params)
 
 print(res.json())
