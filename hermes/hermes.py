@@ -55,15 +55,41 @@ class ModernPortfolio:
         optimal_weights = result.x
         return self.format_weights_as_dict(optimal_weights)
 
+    def calculate_metrics_from_dict(self, weights_dict):
+        # Validate input
+        if not isinstance(weights_dict, dict):
+            raise ValueError("weights_dict must be a dictionary with tickers as keys and weights as values.")
+        
+        # Check if all tickers in the dict are valid
+        if set(weights_dict.keys()) != set(self.tickers):
+            raise ValueError("weights_dict keys must match the tickers used in the portfolio.")
+        
+        # Extract weights in the correct order
+        weights = np.array([weights_dict[ticker] for ticker in self.tickers])
 
-# # Example usage
-# portfolio = ['NVDA', 'SBUX']
-# window_start = '2018-01-01'
-# window_end = '2024-01-01'
+        # Validate the weights sum to 1
+        if not np.isclose(np.sum(weights), 1):
+            raise ValueError("The sum of weights must be equal to 1.")
 
-# # Create an instance of ModernPortfolio
-# modern_portfolio = ModernPortfolio(portfolio, window_start, window_end)
+        # Calculate and return the metrics
+        return self.metrics(weights)
 
-# # Optimize and get the optimal weights as a dictionary
-# optimal_weights_dict = modern_portfolio.optimize_portfolio()
-# print(optimal_weights_dict)
+
+# Example usage
+portfolio = ['NVDA', 'SBUX']
+window_start = '2018-01-01'
+window_end = '2024-01-01'
+
+# Create an instance of ModernPortfolio
+modern_portfolio = ModernPortfolio(portfolio, window_start, window_end)
+
+# Define a dictionary with ticker weights
+weights_dict = {'NVDA': 0.6, 'SBUX': 0.4}
+
+# Calculate metrics using the dictionary
+portfolio_return, portfolio_std, sharpe_ratio = modern_portfolio.calculate_metrics_from_dict(weights_dict)
+
+# Print the results
+print(f"Portfolio Return: {portfolio_return:.2%}")
+print(f"Portfolio Standard Deviation: {portfolio_std:.2%}")
+print(f"Portfolio Sharpe Ratio: {sharpe_ratio:.4f}")

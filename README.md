@@ -36,3 +36,8 @@ Aug 5, 2024:
 - Finished algorithm in research notebook
 - Encapsulated variables and methods and moved code into separate module
 - Finished API get request that takes ticker symbols and returns optimal weights
+
+Aug 6, 2024
+- Imported CORS library to allow local development (Render wasn't allowing me to make calls)
+- Updated hermes module to allow metric calculations with inputted weight and portfolios
+- Made another resource/route for API
