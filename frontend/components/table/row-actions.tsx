@@ -9,10 +9,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { PortfolioItem } from '@/types/schema';
+import { Stock } from '@/types/schema';
 
 interface RowActionsProps {
-    input: PortfolioItem;
+    input: Stock;
 }
 
 export default function RowActions({ row }: RowActionsProps) {

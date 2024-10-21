@@ -1,35 +1,19 @@
-import { useState } from 'react';
-import { columns } from './columns';
+import { Stock } from '@/types/schema';
 import DataTable from './data-table';
-import { PortfolioItem } from '@/types/schema';
+import { columns } from './columns';
+import { usePortfolio } from '@/context/PortfolioContext';
+import { Button } from '../ui/button';
 
 export default function Table() {
-    const [portfolioItems] = useState<PortfolioItem[]>([
-        {
-            ticker: 'AAPL',
-            currentPrice: 10,
-            weight: 1,
-        },
-        {
-            ticker: 'NVDA',
-            currentPrice: 100,
-            weight: 1,
-        },
-        {
-            ticker: 'TSLA',
-            currentPrice: 50,
-            weight: 1,
-        },
-        {
-            ticker: 'MSFT',
-            currentPrice: 490,
-            weight: 1,
-        },
-    ]);
+    const { portfolio } = usePortfolio();
+
+    const values: Stock[] = Object.values(portfolio);
 
     return (
         <div className="container mx-auto py-10">
-            <DataTable columns={columns} data={portfolioItems} />
+            <DataTable columns={columns} data={values} />
+            <Button>Add Stock</Button>
+            <p>{JSON.stringify(portfolio, null, 2)}</p>
         </div>
     );
 }
