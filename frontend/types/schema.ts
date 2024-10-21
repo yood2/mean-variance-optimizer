@@ -1,8 +1,13 @@
-export interface PortfolioItem {
+export interface Stock {
     ticker: string;
-    currentPrice: number;
-    weight: number;
+    quantity: number;
+    buyPrice: number;
+    currentPrice?: number;
     optimalWeight?: number;
     expectedReturn?: number;
     volatility?: number;
+}
+
+export interface Portfolio {
+    [ticker: string]: Stock;
 }

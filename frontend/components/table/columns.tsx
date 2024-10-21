@@ -1,10 +1,14 @@
 'use client';
 
-import { PortfolioItem } from '@/types/schema';
+import { useState, useEffect } from 'react';
+import { Stock } from '@/types/schema';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Row } from '@tanstack/react-table';
 import RowActions from './row-actions';
+import { Input } from '@/components/ui/input';
+import { usePortfolio } from '@/context/PortfolioContext';
 
 const formatCurrency = (amount: number, currency: string = 'USD') => {
     return new Intl.NumberFormat('en-US', {
@@ -17,6 +21,7 @@ const formatPercent = (value: number, decimals: number = 2) => {
     return `${(value * 100).toFixed(decimals)}%`;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sortableHeader = (column: any, label: string) => {
     return (
         <Button
@@ -29,10 +34,51 @@ const sortableHeader = (column: any, label: string) => {
     );
 };
 
-export const columns: ColumnDef<PortfolioItem>[] = [
+const EditableCell = ({
+    row,
+    accessorKey,
+}: {
+    row: Row<Stock>;
+    accessorKey: string;
+}) => {
+    const { updateStock } = usePortfolio();
+    const initialValue = row.getValue(accessorKey) as number | string;
+    const [value, setValue] = useState<number | string>(initialValue);
+
+    useEffect(() => {
+        const updatedStock: Partial<Stock> = {
+            [accessorKey]: value,
+        };
+        updateStock(row.getValue('ticker'), updatedStock);
+    }, [value]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(parseFloat(e.target.value));
+    };
+
+    return (
+        <Input type="number" value={value} onChange={handleChange} min={0} />
+    );
+};
+
+export const columns: ColumnDef<Stock>[] = [
     {
         accessorKey: 'ticker',
         header: ({ column }) => sortableHeader(column, 'Ticker'),
+    },
+    {
+        accessorKey: 'quantity',
+        header: ({ column }) => sortableHeader(column, 'Quantity'),
+        cell: ({ row }) => {
+            return <EditableCell row={row} accessorKey="quantity" />;
+        },
+    },
+    {
+        accessorKey: 'buyPrice',
+        header: ({ column }) => sortableHeader(column, 'Buy Price'),
+        cell: ({ row }) => {
+            return <EditableCell row={row} accessorKey="buyPrice" />;
+        },
     },
     {
         accessorKey: 'currentPrice',
@@ -42,18 +88,6 @@ export const columns: ColumnDef<PortfolioItem>[] = [
             return (
                 <div className="text-right font-medium">
                     {formatCurrency(amount)}
-                </div>
-            );
-        },
-    },
-    {
-        accessorKey: 'weight',
-        header: ({ column }) => sortableHeader(column, 'Weight'),
-        cell: ({ row }) => {
-            const weight = parseFloat(row.getValue('weight'));
-            return (
-                <div className="text-right font-medium">
-                    {formatPercent(weight)}
                 </div>
             );
         },
@@ -97,7 +131,7 @@ export const columns: ColumnDef<PortfolioItem>[] = [
     {
         id: 'actions',
         cell: ({ row }) => {
-            return <RowActions input={row.original} />;
+            return <RowActions row={row.original} />;
         },
     },
 ];
