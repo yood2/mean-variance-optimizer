@@ -1,8 +1,8 @@
 export interface Stock {
     ticker: string;
-    buyPrice: number;
-    currentPrice: number;
     quantity: number;
+    buyPrice: number;
+    currentPrice?: number;
     optimalWeight?: number;
     expectedReturn?: number;
     volatility?: number;
