@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import { columns } from './columns';
 import DataTable from './data-table';
 import { PortfolioItem } from '@/types/schema';
 
-async function getData(): Promise<PortfolioItem[]> {
-    // Fetch data from your API here.
-    return [
+export default function Table() {
+    const [portfolioItems] = useState<PortfolioItem[]>([
         {
             ticker: 'AAPL',
             currentPrice: 10,
@@ -25,16 +25,11 @@ async function getData(): Promise<PortfolioItem[]> {
             currentPrice: 490,
             weight: 1,
         },
-        // ...
-    ];
-}
-
-export default async function Portfolio() {
-    const data = await getData();
+    ]);
 
     return (
         <div className="container mx-auto py-10">
-            <DataTable columns={columns} data={data} />
+            <DataTable columns={columns} data={portfolioItems} />
         </div>
     );
 }
