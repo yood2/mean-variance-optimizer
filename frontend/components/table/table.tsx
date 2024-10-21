@@ -2,7 +2,7 @@ import { Stock } from '@/types/schema';
 import DataTable from './data-table';
 import { columns } from './columns';
 import { usePortfolio } from '@/context/PortfolioContext';
-import AddStock from './add-stock';
+import { PopoverButton } from './popover-button';
 
 export default function Table() {
     const { portfolio } = usePortfolio();
@@ -11,7 +11,7 @@ export default function Table() {
     return (
         <div className="container mx-auto py-10">
             <DataTable columns={columns} data={values} />
-            <AddStock />
+            <PopoverButton />
             <p>{JSON.stringify(portfolio, null, 2)}</p>
         </div>
     );

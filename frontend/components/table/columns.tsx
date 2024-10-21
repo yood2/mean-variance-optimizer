@@ -131,7 +131,7 @@ export const columns: ColumnDef<Stock>[] = [
     {
         id: 'actions',
         cell: ({ row }) => {
-            return <RowActions input={row.original} />;
+            return <RowActions row={row.original} />;
         },
     },
 ];

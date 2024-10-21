@@ -1,22 +1,25 @@
 import { MoreHorizontal } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Stock } from '@/types/schema';
+import { usePortfolio } from '@/context/PortfolioContext';
 
 interface RowActionsProps {
-    input: Stock;
+    row: Stock;
 }
 
 export default function RowActions({ row }: RowActionsProps) {
-    // console.log(row);
+    const { removeStock } = usePortfolio();
+
+    const handleDelete = () => {
+        removeStock(row.ticker);
+    };
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -26,10 +29,9 @@ export default function RowActions({ row }: RowActionsProps) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Update</DropdownMenuItem>
-                <DropdownMenuItem>Delete</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDelete}>
+                    Delete
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
