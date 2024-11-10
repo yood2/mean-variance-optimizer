@@ -1,3 +1,4 @@
+import useFetch from '@/hooks/useFetch';
 import { Portfolio, Stock } from '@/types/schema';
 import { useState, useContext, createContext } from 'react';
 
@@ -17,9 +18,7 @@ export const PortfolioProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const [portfolio, setPortfolio] = useState<Portfolio>({
-        AAPL: { ticker: 'AAPL', currentPrice: 10, quantity: 1 },
-    });
+    const [portfolio, setPortfolio] = useState<Portfolio>({});
 
     const addStock = (stock: Stock) => {
         setPortfolio((prevPortfolio) => ({
