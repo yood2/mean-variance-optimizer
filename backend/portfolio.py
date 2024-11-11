@@ -7,7 +7,10 @@ class Portfolio:
     def __init__(self):
         self.tickers = []
         self.data = pd.DataFrame()
+        self.stock_data = {}
         self.optimized_weights = {}
+        self.start_date = "2023-01-01"
+        self.end_date= "2024-01-01"
 
     def __str__(self):
         return (f'Tickers: {self.tickers} \n Data: {self.data} \n Weights: {self.optimized_weights}')
@@ -17,17 +20,30 @@ class Portfolio:
             raise ValueError(f'{ticker} is already in the portfolio.')
         
         self.tickers.append(ticker)
-        stock_data = yf.download(ticker, start="2023-01-01", end="2024-01-01")['Adj Close']
+        stock_data = yf.download(ticker, start= self.start_date, end= self.end_date)['Adj Close']
         self.data[ticker] = stock_data
-        self.calculate_mean_variance()
-    
-    def remove_ticker(self, ticker):
-        if ticker not in self.tickers:
-            raise ValueError(f'{ticker} not in portfolio.')
 
-        self.tickers.remove(ticker)
-        self.data.drop(columns=ticker, inplace=True)
-        self.calculate_mean_variance()
+        price = float(stock_data.iloc[-1])  # Most recent price as a float
+        mean = float(stock_data.mean() * 252)  # Annualized mean return as a float
+        volatility = float(stock_data.std() * np.sqrt(252))  # Annualized volatility as a float
+
+        self.stock_data[ticker] = {
+            "price": price,
+            "mean": mean,
+            "volatility": volatility,
+        }
+    
+    # def remove_ticker(self, ticker):
+    #     if ticker not in self.tickers:
+    #         raise ValueError(f'{ticker} not in portfolio.')
+
+    #     self.tickers.remove(ticker)
+    #     self.data.drop(columns=ticker, inplace=True)
+    #     self.calculate_mean_variance()
+
+    #     return {
+    #         "weights": self.get_optimized_weights()
+    #     }
 
     def calculate_mean_variance(self):
         returns = self.data.pct_change().dropna()
@@ -42,8 +58,11 @@ class Portfolio:
         bounds = tuple((0, 1) for _ in range(num_assets))
         initial_guess = num_assets * [1. / num_assets]
         result = minimize(portfolio_volatility, initial_guess, method='SLSQP', bounds=bounds, constraints=constraints)
-        self.optimized_weights = dict(zip(self.tickers, result.x))
-        return self.optimized_weights
+        self.optimized_weights = dict(zip(self.tickers, map(float, result.x)))
 
-    def get_optimized_weights(self):
-        return self.optimized_weights
+    def get_portfolio_information(self):
+        return {
+            "tickers": self.tickers,
+            "stock_data": self.stock_data,
+            "optimized_weights": self.optimized_weights,
+        }

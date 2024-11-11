@@ -1,12 +1,29 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
+from portfolio import Portfolio
 
 app = FastAPI()
+portfolio = Portfolio()
+
+class TickerRequest(BaseModel):
+    ticker: List[str]
 
 @app.get('/')
 async def root():
     return {"message": "Hello World"}
 
-@app.get('/stock/{ticker}')
-async def get_stock(ticker):
-    ticker = ticker
-    return {"message": f'${ticker}'}
+@app.put("/portfolio")
+async def add_tickers(request: TickerRequest):
+    portfolio = Portfolio()
+
+    for ticker in request.tickers:
+        try:
+            portfolio.add_ticker(ticker)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+    
+    portfolio.calculate_mean_variance()
+    res = portfolio.get_portfolio_information()
+    print(res)
+    return {"message": "done"}
