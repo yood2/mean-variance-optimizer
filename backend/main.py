@@ -7,7 +7,7 @@ app = FastAPI()
 portfolio = Portfolio()
 
 class TickerRequest(BaseModel):
-    ticker: List[str]
+    tickers: List[str]
 
 @app.get('/')
 async def root():
@@ -25,5 +25,4 @@ async def add_tickers(request: TickerRequest):
     
     portfolio.calculate_mean_variance()
     res = portfolio.get_portfolio_information()
-    print(res)
-    return {"message": "done"}
+    return {"res": res}
