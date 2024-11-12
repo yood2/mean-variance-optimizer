@@ -1,6 +1,7 @@
 ## FastAPI Imports
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from mangum import Mangum
 from typing import List
 ## Portfolio Imports
 import yfinance as yf
@@ -76,6 +77,7 @@ class Portfolio:
 
 '''------------------------------------------------------------------------------------------'''
 app = FastAPI()
+handler = Mangum(app)
 portfolio = Portfolio()
 
 class TickerRequest(BaseModel):
@@ -85,7 +87,7 @@ class TickerRequest(BaseModel):
 async def root():
     return {"message": "Hello World"}
 
-@app.put("/portfolio")
+@app.get("/portfolio")
 async def add_tickers(request: TickerRequest):
     portfolio = Portfolio()
 

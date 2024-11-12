@@ -1,2 +1,5 @@
 venv/
+dependencies/
+
 requirements.txt
+aws_lambda_artifact.zip
