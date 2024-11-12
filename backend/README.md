@@ -10,8 +10,11 @@ Technologies:
 Stateless API for calculating expected return, volatility, optimized weights for
 portfolio.
 
-Creating lambda artifact zip:
+Quickstart:
+- `fastapi dev main.py`
 
-1. pip3 install -t dependencies -r requirements.txt
-2. (cd dependencies; zip ../aws_lambda_artifact.zip -r .)
-3. zip aws_lambda_artifact.zip -u main.py
+Creating lambda artifact zip for AWS:
+
+1. `pip3 install -t dependencies -r requirements.txt`
+2. `(cd dependencies; zip ../aws_lambda_artifact.zip -r .)`
+3. `zip aws_lambda_artifact.zip -u main.py`

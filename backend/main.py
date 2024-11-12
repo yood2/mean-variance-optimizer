@@ -10,7 +10,6 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
-'''------------------------------------------------------------------------------------------'''
 class Portfolio:
     def __init__(self):
         self.tickers = []
@@ -75,8 +74,6 @@ class Portfolio:
             "optimized_weights": self.optimized_weights,
         }
     
-
-'''------------------------------------------------------------------------------------------'''
 app = FastAPI()
 handler = Mangum(app)
 portfolio = Portfolio()
