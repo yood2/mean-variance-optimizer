@@ -1,11 +1,10 @@
-import useFetch from '@/hooks/useFetch';
-import { Portfolio, Stock } from '@/types/schema';
-import { useState, useContext, createContext } from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
+import { ApiResponse, Stock } from '@/types/schema';
 
 interface PortfolioContextType {
-    portfolio: Portfolio;
-    addStock: (stock: Stock) => void;
-    updateStock: (ticker: string, updatedStock: Partial<Stock>) => void;
+    portfolio: Stock[];
+    tickers: string[];
+    addStock: (ticker: string) => void;
     removeStock: (ticker: string) => void;
 }
 
@@ -18,37 +17,59 @@ export const PortfolioProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const [portfolio, setPortfolio] = useState<Portfolio>({});
+    const [portfolio, setPortfolio] = useState<Stock[]>([]);
+    const [tickers, setTickers] = useState<string[]>([]);
 
-    const addStock = (stock: Stock) => {
-        setPortfolio((prevPortfolio) => ({
-            ...prevPortfolio,
-            [stock.ticker]: stock,
-        }));
-    };
+    // Function to fetch portfolio data based on tickers
+    useEffect(() => {
+        const fetchPortfolio = async () => {
+            const url = process.env.NEXT_PUBLIC_API;
 
-    const updateStock = (ticker: string, updatedStock: Partial<Stock>) => {
-        console.log('updating stock!');
-        setPortfolio((prevPortfolio) => ({
-            ...prevPortfolio,
-            [ticker]: {
-                ...prevPortfolio[ticker],
-                ...updatedStock,
-            },
-        }));
+            try {
+                const response = await fetch(`${url}/portfolio`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ tickers }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch portfolio data');
+                }
+
+                const apiResponse: ApiResponse = await response.json();
+                const newPortfolio = parseApiData(apiResponse);
+                setPortfolio(newPortfolio);
+            } catch (error) {
+                console.error('Error fetching portfolio data:', error);
+                setPortfolio([]);
+            }
+        };
+
+        if (tickers.length > 0) {
+            fetchPortfolio();
+        } else {
+            setPortfolio([]);
+        }
+    }, [tickers]);
+
+    const addStock = (ticker: string) => {
+        setTickers((prevTickers) => {
+            if (!prevTickers.includes(ticker)) {
+                return [...prevTickers, ticker];
+            }
+            return prevTickers;
+        });
     };
 
     const removeStock = (ticker: string) => {
-        setPortfolio((prevPortfolio) => {
-            const newPortfolio = { ...prevPortfolio };
-            delete newPortfolio[ticker];
-            return newPortfolio;
-        });
+        setTickers((prevTickers) => prevTickers.filter((t) => t !== ticker));
     };
 
     return (
         <PortfolioContext.Provider
-            value={{ portfolio, addStock, updateStock, removeStock }}
+            value={{ portfolio, tickers, addStock, removeStock }}
         >
             {children}
         </PortfolioContext.Provider>
@@ -62,3 +83,24 @@ export const usePortfolio = () => {
     }
     return context;
 };
+
+// convert api response to table data
+function parseApiData(response: ApiResponse): Stock[] {
+    const {
+        tickers = [],
+        stock_data = {},
+        optimized_weights = {},
+    } = response.res;
+
+    const res = tickers.map((ticker: string) => ({
+        ticker,
+        currentPrice: stock_data[ticker]?.price,
+        optimalWeight: optimized_weights[ticker],
+        expectedReturn: stock_data[ticker]?.mean,
+        volatility: stock_data[ticker]?.volatility,
+    }));
+
+    console.log(tickers);
+
+    return res;
+}

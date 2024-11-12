@@ -1,13 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Stock } from '@/types/schema';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Row } from '@tanstack/react-table';
-import RowActions from './row-actions';
-import { Input } from '@/components/ui/input';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+import { ArrowUpDown } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
+
 import { usePortfolio } from '@/context/PortfolioContext';
 
 const formatCurrency = (amount: number, currency: string = 'USD') => {
@@ -34,51 +39,10 @@ const sortableHeader = (column: any, label: string) => {
     );
 };
 
-const EditableCell = ({
-    row,
-    accessorKey,
-}: {
-    row: Row<Stock>;
-    accessorKey: string;
-}) => {
-    const { updateStock } = usePortfolio();
-    const initialValue = row.getValue(accessorKey) as number | string;
-    const [value, setValue] = useState<number | string>(initialValue);
-
-    useEffect(() => {
-        const updatedStock: Partial<Stock> = {
-            [accessorKey]: value,
-        };
-        updateStock(row.getValue('ticker'), updatedStock);
-    }, [value]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(parseFloat(e.target.value));
-    };
-
-    return (
-        <Input type="number" value={value} onChange={handleChange} min={0} />
-    );
-};
-
 export const columns: ColumnDef<Stock>[] = [
     {
         accessorKey: 'ticker',
         header: ({ column }) => sortableHeader(column, 'Ticker'),
-    },
-    {
-        accessorKey: 'quantity',
-        header: ({ column }) => sortableHeader(column, 'Quantity'),
-        cell: ({ row }) => {
-            return <EditableCell row={row} accessorKey="quantity" />;
-        },
-    },
-    {
-        accessorKey: 'buyPrice',
-        header: ({ column }) => sortableHeader(column, 'Buy Price'),
-        cell: ({ row }) => {
-            return <EditableCell row={row} accessorKey="buyPrice" />;
-        },
     },
     {
         accessorKey: 'currentPrice',
@@ -135,3 +99,34 @@ export const columns: ColumnDef<Stock>[] = [
         },
     },
 ];
+
+/**
+ * ROW ACTIONS
+ */
+interface RowActionsProps {
+    row: Stock;
+}
+
+function RowActions({ row }: RowActionsProps) {
+    const { removeStock } = usePortfolio();
+
+    const handleDelete = () => {
+        removeStock(row.ticker);
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleDelete}>
+                    Delete
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}

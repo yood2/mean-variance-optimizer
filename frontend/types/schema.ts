@@ -1,13 +1,22 @@
 export interface Stock {
     ticker: string;
-    quantity: number;
-    buyPrice: number;
     currentPrice?: number;
     optimalWeight?: number;
     expectedReturn?: number;
     volatility?: number;
 }
 
-export interface Portfolio {
-    [ticker: string]: Stock;
+export interface ApiResponse {
+    res: {
+        tickers?: string[];
+        stock_data?: Record<
+            string,
+            {
+                price: number;
+                mean: number;
+                volatility: number;
+            }
+        >;
+        optimized_weights?: Record<string, number>;
+    };
 }
