@@ -1,6 +1,6 @@
 <img src="./public/hermes.svg" alt="drawing" width="100"/>
 
-# Hermes - Mean-Variance Calculator
+# Hermes - Mean-Variance Analysis
+Backend API that uses Python libraries to calculate optimized portfolio weighting using mean-variance analysis.
 
-I'm changing it up! Going to be converting my Python code into a serverless
-Lambda function.
+Frontend React component that allows users to add stocks and receive financial information and automatic calculations. Also includes chart visualization of Efficient Frontier.
