@@ -1,10 +1,11 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
-import { DataTableViewOptions } from './data-table-view-options';
+import { DataTableColumnOptions } from './data-table-column-options';
 import AddStock from './add-stock';
 import Debug from '../debug/debug';
 import Settings from '../settings/settings';
+import { DataTableViewOptions } from './data-table-view-options';
 
 interface DataTableToolbarProps<TData> {
     table: Table<TData>;
@@ -20,7 +21,10 @@ export function DataTableToolbar<TData>({
                 <Settings />
                 <Debug />
             </div>
-            <DataTableViewOptions table={table} />
+            <div className="flex flex-1 items-center space-x-2">
+                <DataTableViewOptions />
+                <DataTableColumnOptions table={table} />
+            </div>
         </div>
     );
 }

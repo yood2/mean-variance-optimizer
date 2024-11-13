@@ -114,7 +114,7 @@ async def root():
 
 @app.put("/portfolio")
 async def add_tickers(request: TickerRequest):
-    portfolio = Portfolio("2023-01-01", "2024-01-01")
+    portfolio = Portfolio("2020-01-01", "2023-01-01")
 
     for ticker in request.tickers:
         try:

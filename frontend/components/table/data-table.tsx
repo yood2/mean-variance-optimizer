@@ -42,7 +42,6 @@ export function DataTable<TData, TValue>({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
         {}
     );
-    // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
 
     const table = useReactTable({
@@ -52,19 +51,14 @@ export function DataTable<TData, TValue>({
             sorting,
             columnVisibility,
             rowSelection,
-            // columnFilters,
         },
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
-        // onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
         getCoreRowModel: getCoreRowModel(),
-        // getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        // getFacetedRowModel: getFacetedRowModel(),
-        // getFacetedUniqueValues: getFacetedUniqueValues(),
     });
 
     return (
