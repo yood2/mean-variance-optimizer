@@ -30,27 +30,17 @@ class Portfolio:
         stock_data = yf.download(ticker, start= self.start_date, end= self.end_date)['Adj Close']
         self.data[ticker] = stock_data
 
+        daily_returns = stock_data.pct_change().dropna()
+
         price = float(stock_data.iloc[-1])  # Most recent price as a float
-        mean = float(stock_data.mean() * 252)  # Annualized mean return as a float
-        volatility = float(stock_data.std() * np.sqrt(252))  # Annualized volatility as a float
+        mean = float(daily_returns.mean() * 252)  # Annualized mean return as a float
+        volatility = float(daily_returns.std() * np.sqrt(252))  # Annualized volatility as a float
 
         self.stock_data[ticker] = {
             "price": price,
             "mean": mean,
             "volatility": volatility,
         }
-    
-    # def remove_ticker(self, ticker):
-    #     if ticker not in self.tickers:
-    #         raise ValueError(f'{ticker} not in portfolio.')
-
-    #     self.tickers.remove(ticker)
-    #     self.data.drop(columns=ticker, inplace=True)
-    #     self.calculate_mean_variance()
-
-    #     return {
-    #         "weights": self.get_optimized_weights()
-    #     }
 
     def calculate_mean_variance(self):
         returns = self.data.pct_change().dropna()
