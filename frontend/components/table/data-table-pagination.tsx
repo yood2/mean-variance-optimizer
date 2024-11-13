@@ -1,9 +1,9 @@
 import {
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    DoubleArrowLeftIcon,
-    DoubleArrowRightIcon,
-} from '@radix-ui/react-icons';
+    ChevronLeft,
+    ChevronRight,
+    ChevronsLeft,
+    ChevronsRight,
+} from 'lucide-react';
 import { Table } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,13 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-interface PaginationProps<TData> {
+interface DataTablePaginationProps<TData> {
     table: Table<TData>;
 }
 
-export default function Pagination<TData>({ table }: PaginationProps<TData>) {
+export function DataTablePagination<TData>({
+    table,
+}: DataTablePaginationProps<TData>) {
     return (
         <div className="flex items-center justify-between px-2">
             <div className="flex-1 text-sm text-muted-foreground">
@@ -66,7 +68,7 @@ export default function Pagination<TData>({ table }: PaginationProps<TData>) {
                         disabled={!table.getCanPreviousPage()}
                     >
                         <span className="sr-only">Go to first page</span>
-                        <DoubleArrowLeftIcon className="h-4 w-4" />
+                        <ChevronsLeft />
                     </Button>
                     <Button
                         variant="outline"
@@ -75,7 +77,7 @@ export default function Pagination<TData>({ table }: PaginationProps<TData>) {
                         disabled={!table.getCanPreviousPage()}
                     >
                         <span className="sr-only">Go to previous page</span>
-                        <ChevronLeftIcon className="h-4 w-4" />
+                        <ChevronLeft />
                     </Button>
                     <Button
                         variant="outline"
@@ -84,7 +86,7 @@ export default function Pagination<TData>({ table }: PaginationProps<TData>) {
                         disabled={!table.getCanNextPage()}
                     >
                         <span className="sr-only">Go to next page</span>
-                        <ChevronRightIcon className="h-4 w-4" />
+                        <ChevronRight />
                     </Button>
                     <Button
                         variant="outline"
@@ -95,7 +97,7 @@ export default function Pagination<TData>({ table }: PaginationProps<TData>) {
                         disabled={!table.getCanNextPage()}
                     >
                         <span className="sr-only">Go to last page</span>
-                        <DoubleArrowRightIcon className="h-4 w-4" />
+                        <ChevronsRight />
                     </Button>
                 </div>
             </div>

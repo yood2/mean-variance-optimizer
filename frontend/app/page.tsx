@@ -9,7 +9,6 @@ export default function Home() {
         <>
             <PortfolioProvider>
                 <div className="container mx-auto py-10">
-                    <Settings />
                     <Portfolio />
                 </div>
             </PortfolioProvider>

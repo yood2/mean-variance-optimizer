@@ -10,8 +10,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { ArrowUpDown } from 'lucide-react';
-import { MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, ArrowDownAZ, MoreHorizontal } from 'lucide-react';
 
 import { usePortfolio } from '@/context/PortfolioContext';
 
@@ -27,7 +26,7 @@ const formatPercent = (value: number, decimals: number = 2) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sortableHeader = (column: any, label: string) => {
+const numericSortableHeader = (column: any, label: string) => {
     return (
         <Button
             variant="ghost"
@@ -39,14 +38,27 @@ const sortableHeader = (column: any, label: string) => {
     );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const alphaSortableHeader = (column: any, label: string) => {
+    return (
+        <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+            {label}
+            <ArrowDownAZ className="ml-2 h-4 w-4" />
+        </Button>
+    );
+};
+
 export const columns: ColumnDef<Stock>[] = [
     {
         accessorKey: 'ticker',
-        header: ({ column }) => sortableHeader(column, 'Ticker'),
+        header: ({ column }) => alphaSortableHeader(column, 'Ticker'),
     },
     {
         accessorKey: 'currentPrice',
-        header: ({ column }) => sortableHeader(column, 'Curr. Price'),
+        header: ({ column }) => numericSortableHeader(column, 'Curr. Price'),
         cell: ({ row }) => {
             const amount = parseFloat(row.getValue('currentPrice'));
             return (
@@ -58,7 +70,7 @@ export const columns: ColumnDef<Stock>[] = [
     },
     {
         accessorKey: 'optimalWeight',
-        header: ({ column }) => sortableHeader(column, 'Opt. Weight'),
+        header: ({ column }) => numericSortableHeader(column, 'Opt. Weight'),
         cell: ({ row }) => {
             const optimalWeight = parseFloat(row.getValue('optimalWeight'));
             return (
@@ -70,7 +82,7 @@ export const columns: ColumnDef<Stock>[] = [
     },
     {
         accessorKey: 'expectedReturn',
-        header: ({ column }) => sortableHeader(column, 'Exp. Return'),
+        header: ({ column }) => numericSortableHeader(column, 'Exp. Return'),
         cell: ({ row }) => {
             const expectedReturn = parseFloat(row.getValue('expectedReturn'));
             return (
@@ -82,7 +94,7 @@ export const columns: ColumnDef<Stock>[] = [
     },
     {
         accessorKey: 'volatility',
-        header: ({ column }) => sortableHeader(column, 'Volatility'),
+        header: ({ column }) => numericSortableHeader(column, 'Volatility'),
         cell: ({ row }) => {
             const volatility = parseFloat(row.getValue('volatility'));
             return (

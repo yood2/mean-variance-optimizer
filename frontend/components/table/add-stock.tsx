@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { usePortfolio } from '@/context/PortfolioContext';
 
+import { Plus } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -26,7 +27,12 @@ import { Input } from '@/components/ui/input';
 export default function AddStock() {
     return (
         <Dialog>
-            <DialogTrigger>Add Stock</DialogTrigger>
+            <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 lg:flex">
+                    <Plus />
+                    Add Stock
+                </Button>
+            </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Add Stock</DialogTitle>
@@ -40,8 +46,7 @@ export default function AddStock() {
 }
 
 function AddStockForm() {
-    const { portfolio, addStock } = usePortfolio();
-    const tickers = Object.keys(portfolio);
+    const { tickers, addStock } = usePortfolio();
 
     const formSchema = z.object({
         ticker: z

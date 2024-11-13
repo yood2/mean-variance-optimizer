@@ -1,5 +1,5 @@
 import { Stock } from '@/types/schema';
-import DataTable from './data-table';
+import { DataTable } from './data-table';
 import { columns } from './columns';
 import { usePortfolio } from '@/context/PortfolioContext';
 
