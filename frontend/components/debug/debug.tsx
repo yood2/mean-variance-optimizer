@@ -7,6 +7,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Bug } from 'lucide-react';
 import { usePortfolio } from '@/context/PortfolioContext';
 
 export default function Debug() {
@@ -16,6 +17,7 @@ export default function Debug() {
         <Dialog>
             <DialogTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 lg:flex">
+                    <Bug />
                     Debug
                 </Button>
             </DialogTrigger>
