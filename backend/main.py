@@ -11,13 +11,13 @@ import pandas as pd
 from scipy.optimize import minimize
 
 class Portfolio:
-    def __init__(self):
+    def __init__(self, start_date, end_date):
         self.tickers = []
         self.data = pd.DataFrame()
         self.stock_data = {}
         self.optimized_weights = {}
-        self.start_date = "2023-01-01"
-        self.end_date= "2024-01-01"
+        self.start_date = start_date
+        self.end_date= end_date
 
     def __str__(self):
         return (f'Tickers: {self.tickers} \n Data: {self.data} \n Weights: {self.optimized_weights}')
@@ -64,9 +64,34 @@ class Portfolio:
             "optimized_weights": self.optimized_weights,
         }
     
+    def get_efficient_frontier_points(self, num_points=5):
+        points = []
+        target_returns = np.linspace(self.mean_returns.min(), self.mean_returns.max(), num_points)
+
+        for target_return in target_returns:
+            def portfolio_return(weights):
+                return np.dot(weights, self.mean_returns)
+            
+            def portfolio_volatility(weights):
+                return np.sqrt(np.dot(weights.T, np.dot(self.cov_matrix, weights)))
+
+            constraints = (
+                {'type': 'eq', 'fun': lambda weights: np.sum(weights) - 1},  # weights must sum to 1
+                {'type': 'eq', 'fun': lambda weights: portfolio_return(weights) - target_return}  # target return
+            )
+            bounds = tuple((0, 1) for _ in range(len(self.tickers)))
+            initial_guess = len(self.tickers) * [1. / len(self.tickers)]
+            
+            result = minimize(portfolio_volatility, initial_guess, method='SLSQP', bounds=bounds, constraints=constraints)
+
+            if result.success:
+                volatility = portfolio_volatility(result.x)
+                points.append((target_return, volatility))
+
+        return points
+    
 app = FastAPI()
 handler = Mangum(app)
-portfolio = Portfolio()
 
 origins = [
     "http://localhost:3000"
@@ -89,7 +114,7 @@ async def root():
 
 @app.put("/portfolio")
 async def add_tickers(request: TickerRequest):
-    portfolio = Portfolio()
+    portfolio = Portfolio("2023-01-01", "2024-01-01")
 
     for ticker in request.tickers:
         try:
