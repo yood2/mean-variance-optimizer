@@ -1,6 +1,5 @@
 'use client';
 
-import Settings from '@/components/settings/settings';
 import Portfolio from '@/components/table/table';
 import { PortfolioProvider } from '@/context/PortfolioContext';
 
